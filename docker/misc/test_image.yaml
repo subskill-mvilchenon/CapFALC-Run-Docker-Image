@@ -1,0 +1,113 @@
+schemaVersion: "2.0.0"
+
+metadataTest:
+  env:
+#    - key: VARNAME
+#      value: "varvalue"
+
+#fileExistenceTests:
+#  - name: "entrypoint"
+#    path: "/entrypoint"
+#    shouldExist: true
+#    permissions: "-rwxr-xr-x"
+
+#fileContentTests:
+#  - name: "entrypoint"
+#    path: "/entrypoint"
+#    expectedContents: ["ssh -qCt sas .*", ".*sas .*", "exit \\${EXIT_CODE}"]
+
+commandTests:
+
+  - name: "Whoami"
+    command: "whoami"
+    expectedOutput: ["codatalab"]
+
+  - name: "Workdir"
+    command: "pwd"
+    expectedOutput: ["/home/codatalab"]
+
+  - name: "PHP version"
+    command: "php"
+    args: ["-v"]
+    exitCode: 0
+    expectedOutput: ["PHP 8."]
+
+  - name: "Drupal version"
+    command: "bash"
+    args:
+      - -c 
+      - cat /opt/drupal/web/core/lib/Drupal.php | grep "const VERSION"
+    exitCode: 0
+    expectedOutput: ["VERSION = '9."]
+
+  - name: "XML extension"
+    command: "bash"
+    args:
+      - -c
+      - php --ri xml | grep -i xml
+    exitCode: 0
+    expectedOutput: ["XML Support => active", "libxml2 Version => 2.9.10"]
+
+  - name: "GD extension"
+    command: "bash"
+    args:
+      - -c
+      - php --ri gd | grep -i gd
+    exitCode: 0
+    expectedOutput: ["GD Support => enabled", "bundled \\(2.1.0 compatible\\)"]
+
+  - name: "OpenSSL"
+    command: "openssl"
+    args: ["version"]
+    exitCode: 0
+    expectedOutput: ["OpenSSL 1.1.1k  25 Mar 2021"]
+
+  - name: "OpenSSL Extension"
+    command: "bash"
+    args:
+      - -c
+      - echo '<?php phpinfo(); ?>' | php 2>&1 | grep -vi command | grep -i ssl
+    exitCode: 0
+    expectedOutput: ["SSL => Yes", "OpenSSL support => enabled", "OpenSSL 1.1.1k  25 Mar 2021"]
+
+  - name: "JSON extension"
+    command: "bash"
+    args:
+      - -c
+      - php --ri json | grep -i support
+    exitCode: 0
+    expectedOutput: ["json support => enabled"]
+
+  - name: "cURL extension"
+    command: "bash"
+    args:
+      - -c
+      - php --ri curl | grep -i curl
+    exitCode: 0
+    expectedOutput: ["cURL support => enabled", "cURL Information => 7.74.0"]
+
+  - name: "mbstring extension"
+    command: "bash"
+    args:
+      - -c
+      - php --ri mbstring
+    exitCode: 0
+    expectedOutput: ["Multibyte Support => enabled", "libmbfl version => 1.3.2"]
+
+  - name: "ssh2 extension"
+    command: "bash"
+    args:
+      - -c
+      - php --ri ssh2
+    exitCode: 0
+    expectedOutput: ["SSH2 support => enabled", "extension version => 1.3.1", "libssh2 version => 1.9.0"]
+
+
+#memrory min 256M
+#max esc time 120s
+#max size / fileuploads = 20M
+
+  - name: "apt-get"
+    command: "apt-get"
+    args: ["--help"]
+    exitCode: 0
